@@ -3,7 +3,8 @@ Cloning from ben's ubuntu computer in lab via git (with ssh key maya_ssh_key)
 This includes code that used to run on Ben's computer.
 
 ## Important
-WOrk on master branch, not main!!!
+Work on master branch, not main!!!
+Use "git pull origin master" to pull from online github if I make changes on their website
 
 ## ssh keys
 The ssh key is saved in home/ben/.ssh/maya_env_key
