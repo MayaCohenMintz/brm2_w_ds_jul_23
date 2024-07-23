@@ -1,0 +1,101 @@
+# lightning.pytorch==2.2.2
+seed_everything: false
+monitor: val/all/l1
+monitor_mode: min
+trainer:
+  precision: 16-mixed
+  callbacks:
+    - class_path: ModelCheckpoint
+      init_args:
+        monitor: ${monitor}
+        mode: ${monitor_mode}
+        save_last: true
+    - class_path: EarlyStopping
+      init_args:
+        monitor: ${monitor}
+        mode: ${monitor_mode}
+        patience: 20
+    - LearningRateMonitor
+    - class_path: BackboneFinetuning
+      init_args:
+        unfreeze_backbone_at_epoch: 3
+        backbone_initial_ratio_lr: 0.1
+        verbose: true
+    - class_path: RichProgressBar
+      init_args:
+        theme:
+          metrics_text_delimiter: "\n"
+  max_epochs: -1
+  limit_train_batches: 1000
+model:
+  backbone:
+    class_path: TimmBackbone
+    init_args:
+      model_name: hf-hub/tf_efficientnetv2_s.in21k
+      pretrained: true
+data:
+  data_sources:
+    train:
+      - images_path: /home/ben/brainways/brainways-reg-model/data/real/train/images
+        labels_path: /home/ben/brainways/brainways-reg-model/data/real/train/labels.csv
+        atlas_name: whs_sd_rat_39um
+        type: real
+      - images_path: /home/ben/data/allen-resized
+        labels_path: /home/ben/python/brm2/data/allen/train_labels.csv
+        atlas_name: allen_mouse_25um
+        type: real
+      - images_path: /home/ben/brainways/brainways-reg-model/data/maddy_raw/images
+        labels_path: /home/ben/brainways/brainways-reg-model/data/maddy_raw/labels.csv
+        atlas_name: allen_mouse_25um
+        type: real
+      - images_path: /home/ben/python/brm2/data/atlases/whs_sd_rat_39um
+        labels_path: /home/ben/python/brm2/data/atlases/whs_sd_rat_39um/labels.csv
+        atlas_name: whs_sd_rat_39um
+        type: synth
+      - images_path: /home/ben/python/brm2/data/atlases/allen_mouse_25um
+        labels_path: /home/ben/python/brm2/data/atlases/allen_mouse_25um/labels.csv
+        atlas_name: allen_mouse_25um
+        type: synth
+    val:
+      - images_path: /home/ben/brainways/brainways-reg-model/data/real/val/images
+        labels_path: /home/ben/brainways/brainways-reg-model/data/real/val/labels.csv
+        atlas_name: whs_sd_rat_39um
+        type: real
+      - images_path: /home/ben/data/allen-resized
+        labels_path: /home/ben/python/brm2/data/allen/val_labels.csv
+        atlas_name: allen_mouse_25um
+        type: real
+    test:
+      - images_path: /home/ben/brainways/brainways-reg-model/data/real/test/images
+        labels_path: /home/ben/brainways/brainways-reg-model/data/real/test/labels.csv
+        atlas_name: whs_sd_rat_39um
+        type: real
+      - images_path: /home/ben/data/allen-resized
+        labels_path: /home/ben/python/brm2/data/allen/test_labels.csv
+        atlas_name: allen_mouse_25um
+        type: real
+  batch_size: 64
+  num_workers: 16
+  bias_nearby_samples_p: 0.1
+  atlas_weights:
+    whs_sd_rat_39um: 1.0
+    allen_mouse_25um: 5.0
+  source_type_weights:
+    real: 1.0
+    synth: 0.0
+optimizer:
+  class_path: torch.optim.AdamW
+  init_args:
+    lr: 1e-3
+    betas:
+    - 0.9
+    - 0.999
+    eps: 1.0e-08
+    weight_decay: 0.0
+# lr_scheduler:
+#   class_path: lightning.pytorch.cli.ReduceLROnPlateau
+#   init_args:
+#     monitor: ${monitor}
+#     mode: ${monitor_mode}
+#     patience: 10
+#     min_lr: 1e-4

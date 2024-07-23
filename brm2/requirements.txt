@@ -1,0 +1,12 @@
+torch
+torchvision
+torchaudio
+lightning
+matplotlib
+albumentations
+pandas
+bg_atlasapi
+timm
+jsonargparse[signatures]
+omegaconf
+ipywidgets

@@ -1,0 +1,157 @@
+# lightning.pytorch==2.3.2
+seed_everything: false
+trainer:
+  accelerator: auto
+  strategy: auto
+  devices: auto
+  num_nodes: 1
+  precision: 16-mixed
+  logger: null
+  callbacks:
+  - class_path: lightning.pytorch.callbacks.ModelCheckpoint
+    init_args:
+      dirpath: null
+      filename: null
+      monitor: val/all/l1
+      verbose: false
+      save_last: true
+      save_top_k: 1
+      save_weights_only: false
+      mode: min
+      auto_insert_metric_name: true
+      every_n_train_steps: null
+      train_time_interval: null
+      every_n_epochs: null
+      save_on_train_epoch_end: null
+      enable_version_counter: true
+  - class_path: lightning.pytorch.callbacks.EarlyStopping
+    init_args:
+      monitor: val/all/l1
+      min_delta: 0.0
+      patience: 20
+      verbose: false
+      mode: min
+      strict: true
+      check_finite: true
+      stopping_threshold: null
+      divergence_threshold: null
+      check_on_train_epoch_end: null
+      log_rank_zero_only: false
+  - class_path: lightning.pytorch.callbacks.LearningRateMonitor
+    init_args:
+      logging_interval: null
+      log_momentum: false
+      log_weight_decay: false
+  - class_path: lightning.pytorch.callbacks.RichProgressBar
+    init_args:
+      refresh_rate: 1
+      leave: false
+      theme:
+        description: white
+        progress_bar: '#6206E0'
+        progress_bar_finished: '#6206E0'
+        progress_bar_pulse: '#6206E0'
+        batch_progress: white
+        time: grey54
+        processing_speed: grey70
+        metrics: white
+        metrics_text_delimiter: '
+
+          '
+        metrics_format: .3f
+      console_kwargs: null
+  fast_dev_run: false
+  max_epochs: -1
+  min_epochs: null
+  max_steps: -1
+  min_steps: null
+  max_time: null
+  limit_train_batches: 1000
+  limit_val_batches: null
+  limit_test_batches: null
+  limit_predict_batches: null
+  overfit_batches: 0.0
+  val_check_interval: null
+  check_val_every_n_epoch: 1
+  num_sanity_val_steps: null
+  log_every_n_steps: null
+  enable_checkpointing: null
+  enable_progress_bar: null
+  enable_model_summary: null
+  accumulate_grad_batches: 1
+  gradient_clip_val: null
+  gradient_clip_algorithm: null
+  deterministic: null
+  benchmark: null
+  inference_mode: true
+  use_distributed_sampler: true
+  profiler: null
+  detect_anomaly: false
+  barebones: false
+  plugins: null
+  sync_batchnorm: false
+  reload_dataloaders_every_n_epochs: 0
+  default_root_dir: null
+model:
+  backbone:
+    class_path: backbones.TimmBackbone
+    init_args:
+      model_name: xception41
+      pretrained: true
+  backbone_finetuning:
+    class_path: lightning.pytorch.callbacks.BackboneFinetuning
+    init_args:
+      unfreeze_backbone_at_epoch: 3
+      lambda_func: lightning.pytorch.callbacks.finetuning.multiplicative
+      backbone_initial_ratio_lr: 0.1
+      backbone_initial_lr: null
+      should_align: true
+      initial_denom_lr: 10.0
+      train_bn: true
+      verbose: true
+      rounding: 12
+data:
+  batch_size: 64
+  data_sources:
+    train:
+    - images_path: /home/ben/data/allen-resized
+      labels_path: /home/ben/python/maya/brm2_with_deepslice_cloned-main/brm2/deepslice/DS_gt_all_labels.csv
+      atlas_name: allen_mouse_25um
+      type: real
+    val:
+    - images_path: /home/ben/data/allen-resized
+      labels_path: /home/ben/python/brm2/data/allen/val_labels.csv
+      atlas_name: allen_mouse_25um
+      type: real
+    - images_path: /home/ben/python/brm2/data/deepslice_processed/images
+      labels_path: /home/ben/python/brm2/data/deepslice_processed/val_labels.csv
+      atlas_name: allen_mouse_25um
+      type: real
+    test:
+    - images_path: /home/ben/data/allen-resized
+      labels_path: /home/ben/python/brm2/data/allen/test_labels.csv
+      atlas_name: allen_mouse_25um
+      type: real
+    - images_path: /home/ben/python/brm2/data/deepslice_processed/images
+      labels_path: /home/ben/python/brm2/data/deepslice_processed/test_labels.csv
+      atlas_name: allen_mouse_25um
+      type: real
+  num_workers: 16
+monitor: val/all/l1
+monitor_mode: min
+ckpt_path: null
+optimizer:
+  class_path: torch.optim.AdamW
+  init_args:
+    lr: 0.001
+    betas:
+    - 0.9
+    - 0.999
+    eps: 1.0e-08
+    weight_decay: 0.0
+    amsgrad: false
+    maximize: false
+    foreach: null
+    capturable: false
+    differentiable: false
+    fused: null

@@ -1,0 +1,52 @@
+# lightning.pytorch==2.2.2
+monitor: val/all/l1
+monitor_mode: min
+trainer:
+  limit_train_batches: 500
+  callbacks:
+    - class_path: ModelCheckpoint
+      init_args:
+        monitor: ${monitor}
+        mode: ${monitor_mode}
+        save_last: true
+    - class_path: EarlyStopping
+      init_args:
+        monitor: ${monitor}
+        mode: ${monitor_mode}
+        patience: 20
+    - LearningRateMonitor
+    - class_path: RichProgressBar
+      init_args:
+        theme:
+          metrics_text_delimiter: "\n"
+data:
+  data_sources:
+    train:
+      - images_path: /home/ben/brainways/brainways-reg-model/data/real/train/images
+        labels_path: /home/ben/brainways/brainways-reg-model/data/real/train/labels.csv
+        atlas_name: whs_sd_rat_39um
+        type: real
+      - images_path: /home/ben/python/brm2/data/atlases/whs_sd_rat_39um
+        labels_path: /home/ben/python/brm2/data/atlases/whs_sd_rat_39um/labels.csv
+        atlas_name: whs_sd_rat_39um
+        type: synth
+    val:
+      - images_path: /home/ben/brainways/brainways-reg-model/data/real/val/images
+        labels_path: /home/ben/brainways/brainways-reg-model/data/real/val/labels.csv
+        atlas_name: whs_sd_rat_39um
+        type: real
+    test:
+      - images_path: /home/ben/brainways/brainways-reg-model/data/real/test/images
+        labels_path: /home/ben/brainways/brainways-reg-model/data/real/test/labels.csv
+        atlas_name: whs_sd_rat_39um
+        type: real
+      - images_path: /home/ben/data/allen-resized
+        labels_path: /home/ben/python/brm2/data/allen/test_labels.csv
+        atlas_name: allen_mouse_25um
+        type: real
+  atlas_weights:
+    whs_sd_rat_39um: 1.0
+optimizer:
+  class_path: torch.optim.AdamW
+  init_args:
+    lr: 1e-3

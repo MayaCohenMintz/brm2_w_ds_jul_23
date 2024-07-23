@@ -1,0 +1,42 @@
+DO LATER:
+translate allen slices into O,U,V vecs
+
+TO UNDERSTAND:
+check what backbone is used. It looks like the type is BrainwaysBackbone, but its methods are not yet implemented. Try to find where the DS model is instantiated to figure this out. 
+maybe the feature extractor is Xception, and not the backbone (or maybe these two mean the same thing)?
+does training_step recieve a single image (as Ben's comment suggests) or a batch of images?
+find out how the squared error between y_hat and y is defined. Is it the squared euclidian distance between O,U,V vectors of pred and gt?
+figure out where reference atlas comes in. what does it have to do with DS model's prediction? I thought the steps are: DS model receives slice >> predicts O,U,V vecs >> gets MSE of slice compared to label (gt O,U,V vecs). what do we need a reference atlas for? maybe just for displaying the slice visually?
+figure out if I even need create_atlas_slice is used in deepslice code. If so, plant Ben's code to translate O,U,V into AP before feeding into create_atlas_slice.
+how does MSE of model compared to gt look like in DS code?
+
+
+
+TO IMPLEMENT NEXT: 
+for training on DS gt datasets: organize the DS gt data so that the DeepSliceDataset __getitem__ method will be able to find it in self._labels.iloc[index]["<vectors>"] and return it. This means changing parse_data_sources in dataset_utils. Note that it looks like parse_data_sources already has the labels so the transition from Allen coords has already happened
+Also note that the data organization is only relevant for DS gt slices which I already have O,U,V vectors for. 
+
+
+NEXT STEPS: 
+see if I need to implement our distance metric again, since it was taken from DS 0.3!!
+In deepslice_model: in __init__, change last line of classifier to (inner_dim, 9)
+change the metric in the lightning module in log_val_test (as of now it is l1 and we want to change it to our distance function)
+
+
+TRAINING MODEL ON A SMALL DATASET:
+The yml data_sources>>train controls the training set. 
+I need to change this:
+labels_path: /home/ben/python/brm2/data/allen/train_labels.csv
+to the labels we found (in my computer, in Ben's computer the path will be different):
+C:\Users\Maya\BenAmiLab\Finding_GT\results\all_labels.csv
+(also change the images, name etc in the yml)
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,67 @@
+LOSS FUNCTIONS
+The loss function (l) takes as its params the predicted label and the real label, and compares them. 
+I think that this is the distance between two slices (which is calculated using the O,U,V vectors
+of each slice).
+In class we talked about the expected loss across all the samples (L).
+The optimal classifier for a training set is the predictor that gives the minimal L. 
+
+optimization = the practical minimization of functions. finding min of f(x) across a space. 
+It is dependent on choice of what functions h(x) is comprised of, and loss function. 
+In class we talked about convex functions as surrogates for the loss function. 
+The function plugged into GD/SGD is the expected loss across the whole dataset. 
+
+Here, the optimizer algorithm is AdamW (and not SGD). 
+
+YAML FILE
+CLIs implemented using LightningCLI always support receiving input from configuration files. 
+The default format used for config files is YAML.
+
+
+CHECKPOINTS
+https://lightning.ai/docs/pytorch/stable/common/checkpointing_basic.html
+A Lightning checkpoint contains a dump of the model’s entire internal state.
+Lightning automatically saves a checkpoint for you in your current working directory, with the state of your last training epoch. 
+This makes sure you can resume training in case it was interrupted.
+
+CALLBACKS
+https://lightning.ai/docs/pytorch/stable/extensions/callbacks.html
+Callbacks allow you to add arbitrary self-contained programs to your training. At specific points during the flow of 
+execution (hooks), the Callback interface allows you to design programs that encapsulate a full set of functionality.
+Callbacks should capture NON-ESSENTIAL logic that is NOT required for your lightning module to run.
+
+GENERAL LIGHTNING
+An overall Lightning system should have:
+- Trainer for all engineering
+- LightningModule for all research code.
+- Callbacks for non-essential code.
+
+when is trainer used here?
+
+BACKBONE AND FEATURE EXTRACTION
+the backbone (here it is Xception CNN) does feature extraction, i.e. converts the raw image to numeric
+features that capture important characteristics of the data
+From GPT: The Xception model, pretrained on ImageNet, has learned to extract rich and useful features 
+from images. These features can then be used by subsequent layers for specific tasks, such as 
+classification or regression.
+_______________
+
+WHAT ARE WE TRYING TO MINIMIZE?
+Our predictor: a set of NN weights
+We want the model to output the weights that, when the model receives an unseen test slice,
+give the O,U,V vectors that are closest to the GT labels of that slice. 
+In other words: 
+- l is the squared error between two slices: l(y_hat, y)  
+- L is the average of these differences across a dataset (train, val or test). 
+I think this is MSE. 
+- the predictor we return are the weights that minimize L across the dataset
+
+
+IMPORTANT: difference between precision metric and loss function. 
+The distance function I wrote (distance_between_two_alignments) is the METRIC that is used in test (maybe also in validation) to see
+how precise the model is. It is the euclidian distance between every pixel in the image.
+The MSE is the LOSS FUNCTION that is used in the training (maybe also validation). I am not sure if this means the difference between 
+the O,U,V vectors, or something else. 
+Q: why make them different functions?
+
+_______________
+understand what a batch is 

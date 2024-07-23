@@ -1,0 +1,20 @@
+Code was written in Python and the model constructed using Xception architecture, a pretrained CNN 
+consisting of ~21 million trainable parameters that has high performance on benchmark ImageNet 
+datasets, using the Keras machine learning library (https://keras.io/). The final Softmax layer 
+of Xception was removed and replaced with two dense layers, each consisting of 256 neurons with 
+rectified linear unit activation functions, and nine output neurons with linear activation functions 
+corresponding to the Oxyz, Uxyz, and Vxyz anchoring vectors used by QuickNII. Xception was 
+initialized with weights pretrained on the ImageNet database. All input images were grayscaled 
+and downsampled to 299 × 299 pixels to match the resolution of the images used to pretrain Xception, 
+likely maximising the ability of the model to generalize.
+
+Models were optimized using the mean squared error (MSE) loss function and the Adam optimizer41, 
+with an initial learning rate of 0.001 and batch size of eight. All Xception layers (except for 
+batch normalization layers) were initially frozen with the only trainable layers being the final 
+dense layers, which were randomly initialized. Layers were iteratively unfrozen as loss plateaued
+until the entire model was unfrozen (Fig. 1B); when the loss plateaued a final time the learning 
+rate was further reduced to 0.0001. Pilot studies revealed that lowering the learning rate beyond 
+0.0001 yielded no further improvement. Performance against unseen holdout training images and 
+human-aligned slide-mounted Validation sections was plotted every 5000 iterations. Training on an 
+RTX 2080 Ti workstation took 3−4 days to reach convergence.
+
