@@ -41,8 +41,8 @@ data:
   data_sources:
     train: # these will be initializion params for a DataSource
     # MAYA - commented out the allen slices, put DS gt labels instead (all of them)
-      - images_path: /home/ben/python/maya/brm2_with_deepslice_cloned-main/brm2/deepslice/images
-        labels_path: /home/ben/python/maya/brm2_with_deepslice_cloned-main/brm2/deepslice/DS_gt_all_labels.csv 
+      - images_path: ./deepslice/images
+        labels_path: ./deepslice/DS_gt_all_labels.csv 
         atlas_name: allen_mouse_25um
         type: real
 
@@ -52,8 +52,8 @@ data:
       #   type: real
     val:
     # MAYA - commented out the allen slices, put DS gt validation labels instead
-      - images_path: /home/ben/python/maya/brm2_with_deepslice_cloned-main/brm2/deepslice/images
-        labels_path: /home/ben/python/maya/brm2_with_deepslice_cloned-main/brm2/deepslice/DS_gt_val_labels.csv
+      - images_path: ./deepslice/images
+        labels_path: ./deepslice/DS_gt_val_labels.csv 
         atlas_name: allen_mouse_25um
         type: real
       # - images_path: /home/ben/data/allen-resized
@@ -66,8 +66,8 @@ data:
       #   type: real
     test:
     # MAYA - commented out the allen slices, put DS gt test labels instead
-      - images_path: /home/ben/python/maya/brm2_with_deepslice_cloned-main/brm2/deepslice/images
-        labels_path: /home/ben/python/maya/brm2_with_deepslice_cloned-main/brm2/deepslice/DS_gt_test_labels.csv
+      - images_path: ./deepslice/images
+        labels_path: ./deepslice/DS_gt_test_labels.csv 
         atlas_name: allen_mouse_25um
         type: real
       # - images_path: /home/ben/data/allen-resized

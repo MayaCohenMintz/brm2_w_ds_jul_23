@@ -1,8 +1,8 @@
-## MAYA ADDITIONS for it to work on my laptop
+## MAYA ADDITIONS
 # Ensure the current working directory is 'parent'
 import os
 import sys
-os.chdir('/home/ben/python/maya/brm2_with_deepslice_cloned-main/brm2')
+os.chdir('/home/ben/python/maya/brm2_w_ds_jul_23/brm2')
 sys.path.append(os.path.abspath('.'))
 ## END OF MAYA ADDITIONS
 
